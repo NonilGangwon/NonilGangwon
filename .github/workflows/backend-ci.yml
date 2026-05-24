@@ -71,4 +71,24 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            sudo bash -c 'cat > /etc/systemd/system/nonilgangwon.service << EOF
+            [Unit]
+            Description=NonilGangwon Spring Boot Application
+            After=network.target
+
+            [Service]
+            User=ubuntu
+            WorkingDirectory=/home/ubuntu/app
+            Environment="DB_URL=${{ secrets.DB_URL }}"
+            Environment="DB_USERNAME=${{ secrets.DB_USERNAME }}"
+            Environment="DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
+            ExecStart=/usr/bin/java -Xms256m -Xmx384m -jar /home/ubuntu/app/nonilgangwon.jar
+            SuccessExitStatus=143
+            Restart=always
+            RestartSec=10
+
+            [Install]
+            WantedBy=multi-user.target
+            EOF'
+            sudo systemctl daemon-reload
             sudo systemctl restart nonilgangwon
