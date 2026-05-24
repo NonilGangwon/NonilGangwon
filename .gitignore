@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# IntelliJ
+.idea/
+*.iml
+
+# Gradle
+.gradle/
+build/
+
+# Spring Boot
+backend/build/
+*.jar
+*.war
+
+# Node
+frontend/node_modules/
+frontend/.next/
+frontend/dist/
+frontend/.env.local
+
+# Env
+.env
+*.env
+
+# Logs
+*.log
