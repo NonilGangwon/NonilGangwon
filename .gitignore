@@ -24,5 +24,11 @@ frontend/.env.local
 .env
 *.env
 
+# Local Spring profile (real DB creds — do not commit)
+application-local.yaml
+application-local.yml
+**/application-local.yaml
+**/application-local.yml
+
 # Logs
 *.log

@@ -6,6 +6,10 @@ plugins {
 	kotlin("plugin.jpa") version "2.2.21"
 }
 
+tasks.bootJar {
+	archiveFileName.set("nonilgangwon.jar")
+}
+
 group = "com.nonilgangwon"
 version = "0.0.1-SNAPSHOT"
 
