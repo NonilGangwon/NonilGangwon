@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/api/index.ts","./src/pages/homepage.tsx","./src/types/index.ts"],"version":"6.0.3"}
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/api/index.ts","./src/features/travel-test/result.tsx","./src/features/travel-test/screens.tsx","./src/features/travel-test/questions.ts","./src/features/travel-test/typedata.ts","./src/features/travel-test/types.ts","./src/pages/homepage.tsx","./src/types/index.ts"],"version":"6.0.3"}
