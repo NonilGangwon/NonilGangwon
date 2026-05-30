@@ -82,6 +82,7 @@ jobs:
             Environment="DB_URL=${{ secrets.DB_URL }}"
             Environment="DB_USERNAME=${{ secrets.DB_USERNAME }}"
             Environment="DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
+            Environment="TOUR_API_KEY=${{ secrets.TOUR_API_KEY }}"
             ExecStart=/usr/bin/java -Xms256m -Xmx384m -jar /home/ubuntu/app/nonilgangwon.jar
             SuccessExitStatus=143
             Restart=always
