@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { TYPES } from './typeData'
 import type { Letter, Scores, Vibe } from './types'
 import type { TourPlace } from '../../api/tour'
@@ -134,6 +134,67 @@ function AxisBars({ scores }: { scores: Scores }) {
   )
 }
 
+// 이미지 모달 — ESC 키로도 닫힘
+function ImageModal({ place, onClose }: { place: TourPlace; onClose: () => void }) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [onClose])
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 2000,
+        background: 'rgba(0,0,0,0.8)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 24, cursor: 'zoom-out',
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: 'var(--paper)',
+          borderRadius: 16, overflow: 'hidden',
+          maxWidth: 480, width: '100%',
+          cursor: 'default',
+          boxShadow: '0 32px 64px rgba(0,0,0,0.4)',
+        }}
+      >
+        <img
+          src={place.thumbnail}
+          alt={place.title}
+          style={{ width: '100%', display: 'block', maxHeight: 320, objectFit: 'cover' }}
+        />
+        <div style={{ padding: '20px 24px 24px' }}>
+          <div style={{ fontWeight: 500, fontSize: 17, marginBottom: 6, color: 'var(--ink)' }}>
+            {place.title}
+          </div>
+          {place.address && (
+            <div style={{ fontSize: 13, color: 'var(--muted)' }}>{place.address}</div>
+          )}
+          <button
+            onClick={onClose}
+            style={{
+              marginTop: 20, width: '100%', padding: '12px',
+              border: '1.5px solid var(--line-strong)',
+              borderRadius: 999, background: 'transparent',
+              cursor: 'pointer', fontSize: 14,
+              color: 'var(--ink)', fontFamily: 'var(--sans)',
+              transition: 'background .15s ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--line)')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+          >
+            닫기
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 interface ResultProps {
   code: string
   scores: Scores
@@ -146,6 +207,8 @@ export function Result({ code, scores, places, onRestart, vibe }: ResultProps) {
   const t = TYPES[code]
   const [checks, setChecks] = useState<Record<number, boolean>>({})
   const [toast, setToast] = useState('')
+  const [modalPlace, setModalPlace] = useState<TourPlace | null>(null)
+
   if (!t) return <div className="result">유형을 찾을 수 없습니다.</div>
 
   const bestType = TYPES[t.bestWith]
@@ -169,6 +232,11 @@ export function Result({ code, scores, places, onRestart, vibe }: ResultProps) {
 
   return (
     <section className="result layout-a fade-enter-active">
+      {/* 이미지 모달 */}
+      {modalPlace && (
+        <ImageModal place={modalPlace} onClose={() => setModalPlace(null)} />
+      )}
+
       <div className="result-eyebrow">
         <span className="dot"></span>
         <span>RESULT · YOUR TRAVEL DISPOSITION</span>
@@ -200,7 +268,7 @@ export function Result({ code, scores, places, onRestart, vibe }: ResultProps) {
       </div>
 
       <div className="result-sections">
-        {/* 01 매칭 여행지 — TourAPI 실데이터 */}
+        {/* 01 매칭 여행지 */}
         <div className="section-block" id="cities">
           <h3>
             <span className="num">01</span> 매칭 여행지
@@ -208,13 +276,15 @@ export function Result({ code, scores, places, onRestart, vibe }: ResultProps) {
           {places.length > 0 ? (
             <ul className="cities">
               {places.map((place, i) => (
-                <li key={place.contentId}>
+                <li
+                  key={place.contentId}
+                  className={place.thumbnail ? 'has-image' : ''}
+                  onClick={() => place.thumbnail && setModalPlace(place)}
+                >
                   <span className="idx">{String(i + 1).padStart(2, '0')}</span>
                   <span>{place.title}</span>
                   {place.address && (
-                    <span style={{ fontSize: '0.75em', opacity: 0.5, marginLeft: 8 }}>
-                      {place.address}
-                    </span>
+                    <span className="addr">{place.address}</span>
                   )}
                 </li>
               ))}

@@ -655,7 +655,7 @@ body {
 }
 .cities li {
   display: flex; align-items: center;
-  padding: 16px 0;
+  padding: 16px 8px;
   border-bottom: 1px solid var(--line);
   font-family: var(--serif);
   font-size: 20px;
@@ -663,6 +663,8 @@ body {
   letter-spacing: -0.01em;
   color: var(--ink);
   gap: 16px;
+  border-radius: 6px;
+  margin: 0 -8px;
 }
 .cities li:last-child { border-bottom: none; }
 .cities li .idx {
@@ -671,6 +673,30 @@ body {
   color: var(--muted);
   letter-spacing: 0.08em;
   width: 24px;
+  transition: color .2s ease;
+}
+.cities li .addr {
+  font-size: 0.72em;
+  color: var(--muted);
+  margin-left: auto;
+  transition: color .2s ease;
+}
+
+/* 이미지 있는 항목 hover */
+.cities li.has-image {
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, padding-left .2s ease;
+}
+.cities li.has-image:hover {
+  background: var(--accent);
+  color: #fff;
+  padding-left: 20px;
+}
+.cities li.has-image:hover .idx {
+  color: rgba(255,255,255,0.6);
+}
+.cities li.has-image:hover .addr {
+  color: rgba(255,255,255,0.7);
 }
 
 /* compat */
@@ -846,7 +872,6 @@ body {
   --sans: 'Gowun Dodum', 'Pretendard Variable', 'Pretendard', system-ui, sans-serif;
   --mono: 'Gaegu', 'JetBrains Mono', monospace;
 
-  /* brighter, postcard-like */
   --bg: oklch(0.985 0.015 90);
   --paper: #fffdf7;
   --ink: oklch(0.26 0.04 250);
@@ -854,15 +879,15 @@ body {
   --muted: oklch(0.58 0.04 250);
   --line: oklch(0.90 0.02 70);
   --line-strong: oklch(0.78 0.04 60);
-  --accent: oklch(0.68 0.17 32);          /* coral */
+  --accent: oklch(0.68 0.17 32);
   --accent-deep: oklch(0.56 0.17 32);
   --accent-soft: oklch(0.94 0.05 40);
 
-  --tone-ink:   oklch(0.55 0.10 245);     /* sky-deep */
-  --tone-warm:  oklch(0.82 0.12 55);      /* peach */
-  --tone-moss:  oklch(0.74 0.11 150);     /* mint */
-  --tone-ocean: oklch(0.78 0.10 225);     /* sky */
-  --tone-dusk:  oklch(0.70 0.10 320);     /* lavender pink */
+  --tone-ink:   oklch(0.55 0.10 245);
+  --tone-warm:  oklch(0.82 0.12 55);
+  --tone-moss:  oklch(0.74 0.11 150);
+  --tone-ocean: oklch(0.78 0.10 225);
+  --tone-dusk:  oklch(0.70 0.10 320);
 }
 [data-vibe="casual"][data-palette="cool"] {
   --accent: oklch(0.62 0.15 240);
@@ -887,10 +912,7 @@ body {
   --accent-soft: oklch(0.32 0.05 50);
 }
 
-/* Headlines & global type */
-[data-vibe="casual"] body {
-  letter-spacing: 0;
-}
+[data-vibe="casual"] body { letter-spacing: 0; }
 [data-vibe="casual"] .intro h1,
 [data-vibe="casual"] .quiz-prompt,
 [data-vibe="casual"] .result-headline h2 {
@@ -914,7 +936,6 @@ body {
   border-radius: 999px;
 }
 
-/* Brand */
 [data-vibe="casual"] .brand-mark {
   font-family: 'Jua', sans-serif;
   font-weight: 400;
@@ -929,7 +950,6 @@ body {
   text-transform: none;
 }
 
-/* Buttons → pill with soft shadow */
 [data-vibe="casual"] .btn {
   font-family: 'Gowun Dodum', sans-serif;
   font-weight: 700;
@@ -959,7 +979,6 @@ body {
   box-shadow: 0 8px 0 -2px var(--line-strong);
 }
 
-/* Intro lead label & type grid as sticker cells */
 [data-vibe="casual"] .intro-lead {
   font-family: 'Gaegu', sans-serif;
   font-size: 16px;
@@ -1012,7 +1031,6 @@ body {
   text-transform: none;
 }
 
-/* Quiz */
 [data-vibe="casual"] .quiz-progress-count,
 [data-vibe="casual"] .quiz-hint,
 [data-vibe="casual"] .quiz-progress-axes,
@@ -1051,7 +1069,6 @@ body {
   width: 2px;
 }
 
-/* Photo cards — sticker-style */
 [data-vibe="casual"] .pcard {
   border-radius: 24px;
   padding: 24px;
@@ -1060,8 +1077,6 @@ body {
   transition: transform .35s cubic-bezier(.5,1.4,.5,1), box-shadow .25s ease;
 }
 [data-vibe="casual"] .quiz-cards .pcard:first-of-type { transform: rotate(-1.2deg); }
-[data-vibe="casual"] .quiz-cards > div:last-child .pcard,
-[data-vibe="casual"] .pcard:last-of-type { /* fallback */ }
 [data-vibe="casual"] .quiz-cards .pcard:last-of-type { transform: rotate(1.2deg); }
 [data-vibe="casual"] .pcard:hover {
   transform: translateY(-8px) rotate(0deg) scale(1.01);
@@ -1069,9 +1084,7 @@ body {
 [data-vibe="casual"] .pcard.selecting {
   transform: scale(1.04) rotate(0deg);
 }
-[data-vibe="casual"] .pcard::before {
-  background-image: none;
-}
+[data-vibe="casual"] .pcard::before { background-image: none; }
 [data-vibe="casual"] .pcard-top {
   font-family: 'Gaegu', sans-serif;
   font-size: 14px;
@@ -1105,7 +1118,6 @@ body {
 [data-vibe="casual"] .pcard-bottom .placeholder-tag { display: none; }
 [data-vibe="casual"] .pcard-shape { opacity: 0.32; }
 
-/* Loading */
 [data-vibe="casual"] .loading-msg {
   font-family: 'Jua', sans-serif;
   font-weight: 400;
@@ -1123,7 +1135,6 @@ body {
   border-top-color: var(--accent);
 }
 
-/* Result */
 [data-vibe="casual"] .result-eyebrow {
   font-family: 'Gaegu', sans-serif;
   font-size: 16px;
@@ -1180,13 +1191,18 @@ body {
   font-size: 15px;
   letter-spacing: 0;
 }
+/* casual vibe hover — 이미지 있는 항목 */
+[data-vibe="casual"] .cities li.has-image:hover {
+  background: var(--accent);
+  color: #fff;
+  border-radius: 16px;
+  padding-left: 20px;
+}
 [data-vibe="casual"] .compat-card {
   border-radius: 20px;
   border-width: 2px;
 }
-[data-vibe="casual"] .compat-card.good {
-  background: var(--accent-soft);
-}
+[data-vibe="casual"] .compat-card.good { background: var(--accent-soft); }
 [data-vibe="casual"] .compat-card .lbl,
 [data-vibe="casual"] .compat-card .code {
   font-family: 'Gaegu', sans-serif;
@@ -1229,9 +1245,7 @@ body {
   height: 8px;
   border-radius: 999px;
 }
-[data-vibe="casual"] .axis-fill {
-  background: var(--accent);
-}
+[data-vibe="casual"] .axis-fill { background: var(--accent); }
 [data-vibe="casual"] .share-strip {
   border-radius: 24px;
   border: 2px solid var(--line);
@@ -1242,9 +1256,7 @@ body {
   font-weight: 400;
   font-size: 26px;
 }
-[data-vibe="casual"] .share-strip .sub {
-  font-family: 'Gowun Dodum', sans-serif;
-}
+[data-vibe="casual"] .share-strip .sub { font-family: 'Gowun Dodum', sans-serif; }
 [data-vibe="casual"] .share-btn {
   border-radius: 999px;
   border-width: 2px;

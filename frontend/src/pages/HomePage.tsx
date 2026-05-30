@@ -10,6 +10,7 @@ import '@/features/travel-test/styles.css'
 type Phase = 'intro' | 'quiz' | 'loading' | 'result'
 
 const VIBE: Vibe = 'casual'
+const SESSION_KEY = 'nonilgangwon_result'
 
 const emptyScores = (): Scores => ({ J: 0, P: 0, C: 0, N: 0, A: 0, R: 0, T: 0, L: 0 })
 
@@ -23,20 +24,42 @@ function synthScores(code: string): Scores {
   return s
 }
 
-function initialResult(): TestResult | null {
+// 공유 링크 ?type= 파라미터 처리
+function initialFromUrl(): TestResult | null {
   const code = new URL(location.href).searchParams.get('type')
   return code && TYPES[code] ? { code, scores: synthScores(code) } : null
 }
 
+// 세션에서 이전 결과 복원
+function restoreSession(): { result: TestResult; places: TourPlace[] } | null {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    if (!parsed?.result?.code || !TYPES[parsed.result.code]) return null
+    return parsed
+  } catch {
+    return null
+  }
+}
+
 function HomePage() {
-  const shared = initialResult()
-  const [phase, setPhase] = useState<Phase>(shared ? 'result' : 'intro')
+  // 1순위: URL ?type= 파라미터 / 2순위: 세션 복원 / 3순위: 처음 시작
+  const fromUrl = initialFromUrl()
+  const fromSession = !fromUrl ? restoreSession() : null
+
+  const [phase, setPhase] = useState<Phase>(
+    fromUrl || fromSession ? 'result' : 'intro'
+  )
   const [index, setIndex] = useState(0)
   const [answers, setAnswers] = useState<(Answer | undefined)[]>([])
-  const [result, setResult] = useState<TestResult | null>(shared)
-  const [places, setPlaces] = useState<TourPlace[]>([])
+  const [result, setResult] = useState<TestResult | null>(
+    fromUrl ?? fromSession?.result ?? null
+  )
+  const [places, setPlaces] = useState<TourPlace[]>(
+    fromSession?.places ?? []
+  )
 
-  // API 응답과 Loading 애니메이션 완료를 동시에 기다리기 위한 ref
   const apiDoneRef = useRef(false)
   const animDoneRef = useRef(false)
   const pendingResultRef = useRef<{ code: string; scores: Scores; places: TourPlace[] } | null>(null)
@@ -45,6 +68,13 @@ function HomePage() {
     document.documentElement.setAttribute('data-palette', 'warm')
     document.documentElement.setAttribute('data-vibe', VIBE)
   }, [])
+
+  // result + places가 바뀔 때마다 세션에 저장
+  useEffect(() => {
+    if (result && phase === 'result') {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ result, places }))
+    }
+  }, [result, places, phase])
 
   const start = () => {
     setIndex(0)
@@ -62,7 +92,6 @@ function HomePage() {
     if (index + 1 < QUESTIONS.length) {
       setIndex((i) => i + 1)
     } else {
-      // 유형 코드 계산
       const scores = emptyScores()
       next.forEach((a) => {
         if (a) scores[a.weight] = (scores[a.weight] || 0) + 1
@@ -73,12 +102,10 @@ function HomePage() {
         (scores.A >= scores.R ? 'A' : 'R') +
         (scores.T >= scores.L ? 'T' : 'L')
 
-      // ref 초기화
       apiDoneRef.current = false
       animDoneRef.current = false
       pendingResultRef.current = null
 
-      // Loading 화면으로 전환하면서 동시에 API 호출 시작
       setPhase('loading')
 
       fetchRecommendations(code)
@@ -86,7 +113,6 @@ function HomePage() {
         .then((fetched) => {
           apiDoneRef.current = true
           pendingResultRef.current = { code, scores, places: fetched }
-          // 애니메이션도 끝났으면 바로 result로
           if (animDoneRef.current) {
             setPlaces(fetched)
             setResult({ code, scores })
@@ -100,17 +126,14 @@ function HomePage() {
     if (index > 0) setIndex((i) => i - 1)
   }
 
-  // Loading 애니메이션 완료 콜백
   const onLoadingDone = () => {
     animDoneRef.current = true
-    // API도 끝났으면 바로 result로
     if (apiDoneRef.current && pendingResultRef.current) {
       const { code, scores, places: fetched } = pendingResultRef.current
       setPlaces(fetched)
       setResult({ code, scores })
       setPhase('result')
     }
-    // API가 아직 안 끝났으면 API 완료 시점에 result로 넘어감 (위 then 블록에서 처리)
   }
 
   const restart = () => {
@@ -121,6 +144,7 @@ function HomePage() {
     apiDoneRef.current = false
     animDoneRef.current = false
     pendingResultRef.current = null
+    sessionStorage.removeItem(SESSION_KEY)
     setPhase('intro')
     history.replaceState(null, '', location.pathname)
   }
