@@ -27,6 +27,7 @@ class TourController(
             return ResponseEntity.badRequest().build()
         }
 
+
         val result = tourService.getRecommendations(typeCode = type, numOfRows = size)
         return ResponseEntity.ok(result)
     }
