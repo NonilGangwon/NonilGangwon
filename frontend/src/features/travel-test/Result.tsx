@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { TYPES } from './typeData'
 import type { Letter, Scores, Vibe } from './types'
+import type { TourPlace } from '../../api/tour'
 
-// Character SVG placeholders — one per axis combination
 function CharacterMark({ code, vibe }: { code: string; vibe: Vibe }) {
   const [J, C, A, T] = code.split('')
   const isCasual = vibe === 'casual'
@@ -10,7 +10,6 @@ function CharacterMark({ code, vibe }: { code: string; vibe: Vibe }) {
   if (isCasual) {
     return (
       <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-        {/* Backdrop (C/N) */}
         {C === 'C' ? (
           <g opacity="0.32">
             <rect x="22" y="116" width="22" height="60" />
@@ -23,9 +22,7 @@ function CharacterMark({ code, vibe }: { code: string; vibe: Vibe }) {
             <path d="M14 176 L 50 110 L 76 140 L 100 116 L 132 154 L 162 120 L 188 176 Z" />
           </g>
         )}
-        {/* Hat on top — Adventure */}
         {A === 'A' && <path d="M70 70 L 100 36 L 130 70 Z" />}
-        {/* Sun above — Rest */}
         {A === 'R' && (
           <g>
             <circle cx="100" cy="40" r="10" />
@@ -36,17 +33,12 @@ function CharacterMark({ code, vibe }: { code: string; vibe: Vibe }) {
             <line x1="111" y1="29" x2="114" y2="26" />
           </g>
         )}
-        {/* Main face — round body */}
         <circle cx="100" cy="106" r="38" fill="var(--paper)" />
-        {/* Eyes */}
         <circle cx="88" cy="102" r="3.5" fill="currentColor" />
         <circle cx="112" cy="102" r="3.5" fill="currentColor" />
-        {/* Cheeks */}
         <circle cx="80" cy="116" r="3" fill="var(--accent)" stroke="none" opacity="0.55" />
         <circle cx="120" cy="116" r="3" fill="var(--accent)" stroke="none" opacity="0.55" />
-        {/* Smile */}
         <path d="M90 118 q 10 8 20 0" />
-        {/* Side accessory — J: suitcase / P: balloon */}
         {J === 'J' ? (
           <g>
             <rect x="46" y="138" width="18" height="14" rx="2" />
@@ -59,7 +51,6 @@ function CharacterMark({ code, vibe }: { code: string; vibe: Vibe }) {
             <path d="M150 73 q 0 8 -4 16" />
           </g>
         )}
-        {/* Companion — T: two friends / L: lone bird */}
         {T === 'T' ? (
           <g>
             <circle cx="56" cy="174" r="10" fill="var(--paper)" />
@@ -82,13 +73,11 @@ function CharacterMark({ code, vibe }: { code: string; vibe: Vibe }) {
 
   return (
     <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="1.2">
-      {/* Frame */}
       {J === 'J' ? (
         <rect x="20" y="20" width="160" height="160" />
       ) : (
         <rect x="20" y="20" width="160" height="160" strokeDasharray="4 6" />
       )}
-      {/* Terrain */}
       {C === 'C' ? (
         <g>
           <rect x="60" y="80" width="22" height="80" />
@@ -101,9 +90,7 @@ function CharacterMark({ code, vibe }: { code: string; vibe: Vibe }) {
           <path d="M85 130 L 100 110 L 115 130" />
         </g>
       )}
-      {/* Action: A adventure (chevron) / R rest (line) */}
       {A === 'A' ? <path d="M75 50 L 100 30 L 125 50" /> : <line x1="70" y1="40" x2="130" y2="40" />}
-      {/* Companion */}
       {T === 'T' ? (
         <g>
           <circle cx="78" cy="170" r="6" fill="currentColor" />
@@ -132,22 +119,14 @@ function AxisBars({ scores }: { scores: Scores }) {
         const dominant = leftPct >= 50 ? 'left' : 'right'
         return (
           <div key={key} className={`axis-row dominant-${dominant}`}>
-            <div className="left">
-              {left} {leftPct}%
-            </div>
+            <div className="left">{left} {leftPct}%</div>
             <div className="axis-track">
               <div
                 className="axis-fill"
-                style={
-                  dominant === 'left'
-                    ? { left: 0, width: `${leftPct}%` }
-                    : { right: 0, width: `${100 - leftPct}%` }
-                }
+                style={dominant === 'left' ? { left: 0, width: `${leftPct}%` } : { right: 0, width: `${100 - leftPct}%` }}
               />
             </div>
-            <div className="right">
-              {100 - leftPct}% {right}
-            </div>
+            <div className="right">{100 - leftPct}% {right}</div>
           </div>
         )
       })}
@@ -158,11 +137,12 @@ function AxisBars({ scores }: { scores: Scores }) {
 interface ResultProps {
   code: string
   scores: Scores
+  places: TourPlace[]
   onRestart: () => void
   vibe: Vibe
 }
 
-export function Result({ code, scores, onRestart, vibe }: ResultProps) {
+export function Result({ code, scores, places, onRestart, vibe }: ResultProps) {
   const t = TYPES[code]
   const [checks, setChecks] = useState<Record<number, boolean>>({})
   const [toast, setToast] = useState('')
@@ -215,30 +195,44 @@ export function Result({ code, scores, onRestart, vibe }: ResultProps) {
           <div className="en">{t.en}</div>
           <div className="tag">{t.tag}</div>
           <div className="summary">{t.summary}</div>
-
           <AxisBars scores={scores} />
         </div>
       </div>
 
       <div className="result-sections">
+        {/* 01 매칭 여행지 — TourAPI 실데이터 */}
         <div className="section-block" id="cities">
           <h3>
             <span className="num">01</span> 매칭 여행지
           </h3>
-          <ul className="cities">
-            {t.cities.map((c, i) => (
-              <li key={i}>
-                <span className="idx">{String(i + 1).padStart(2, '0')}</span>
-                <span>{c}</span>
-              </li>
-            ))}
-          </ul>
+          {places.length > 0 ? (
+            <ul className="cities">
+              {places.map((place, i) => (
+                <li key={place.contentId}>
+                  <span className="idx">{String(i + 1).padStart(2, '0')}</span>
+                  <span>{place.title}</span>
+                  {place.address && (
+                    <span style={{ fontSize: '0.75em', opacity: 0.5, marginLeft: 8 }}>
+                      {place.address}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <ul className="cities">
+              {t.cities.map((c, i) => (
+                <li key={i}>
+                  <span className="idx">{String(i + 1).padStart(2, '0')}</span>
+                  <span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="section-block">
-          <h3>
-            <span className="num">02</span> 궁합 유형
-          </h3>
+          <h3><span className="num">02</span> 궁합 유형</h3>
           <div className="compat">
             <div className="compat-card good">
               <div className="lbl">최고의 동행</div>
@@ -260,9 +254,7 @@ export function Result({ code, scores, onRestart, vibe }: ResultProps) {
         </div>
 
         <div className="section-block" style={{ gridColumn: '1 / -1', maxWidth: 640, marginTop: 16 }}>
-          <h3>
-            <span className="num">04</span> 여행 체크리스트
-          </h3>
+          <h3><span className="num">04</span> 여행 체크리스트</h3>
           <ul className="checklist">
             {t.checklist.map((item, i) => (
               <li key={i}>
@@ -272,13 +264,7 @@ export function Result({ code, scores, onRestart, vibe }: ResultProps) {
                 >
                   {checks[i] && (
                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                      <path
-                        d="M2 5 L 4 7 L 8 3"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
+                      <path d="M2 5 L 4 7 L 8 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   )}
                 </span>
@@ -319,28 +305,16 @@ export function Result({ code, scores, onRestart, vibe }: ResultProps) {
       </div>
 
       <div className="result-actions">
-        <button className="btn btn-ghost" onClick={onRestart}>
-          다시 테스트하기
-        </button>
+        <button className="btn btn-ghost" onClick={onRestart}>다시 테스트하기</button>
       </div>
 
       {toast && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: 32,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: 'var(--ink)',
-            color: 'var(--bg)',
-            padding: '12px 20px',
-            borderRadius: 999,
-            fontFamily: 'var(--mono)',
-            fontSize: 12,
-            letterSpacing: '0.08em',
-            zIndex: 1000,
-          }}
-        >
+        <div style={{
+          position: 'fixed', bottom: 32, left: '50%', transform: 'translateX(-50%)',
+          background: 'var(--ink)', color: 'var(--bg)', padding: '12px 20px',
+          borderRadius: 999, fontFamily: 'var(--mono)', fontSize: 12,
+          letterSpacing: '0.08em', zIndex: 1000,
+        }}>
           {toast}
         </div>
       )}
