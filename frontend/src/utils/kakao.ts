@@ -22,10 +22,9 @@ interface KakaoShareParams {
   typeCode: string
   typeName: string
   typeTag: string
-  thumbnail?: string
 }
 
-export function shareKakao({ typeCode, typeName, typeTag, thumbnail }: KakaoShareParams) {
+export function shareKakao({ typeCode, typeName, typeTag }: KakaoShareParams) {
   init()
 
   if (!window.Kakao?.isInitialized()) {
@@ -35,6 +34,7 @@ export function shareKakao({ typeCode, typeName, typeTag, thumbnail }: KakaoShar
 
   const baseUrl = import.meta.env.VITE_SHARE_BASE_URL || location.origin
   const shareUrl = `${baseUrl}/?type=${typeCode}`
+  const imageUrl = `${baseUrl}/characters/${typeCode}.svg`
 
   try {
     window.Kakao.Share.sendDefault({
@@ -42,9 +42,7 @@ export function shareKakao({ typeCode, typeName, typeTag, thumbnail }: KakaoShar
       content: {
         title: `나의 여행 유형은 ${typeCode}`,
         description: `${typeName} — ${typeTag}`,
-        imageUrl: thumbnail && thumbnail.startsWith('http')
-          ? thumbnail
-          : 'https://www.visitkorea.or.kr/resources/images/common/visitkorea_og.jpg',
+        imageUrl: imageUrl,
         link: {
           mobileWebUrl: shareUrl,
           webUrl: shareUrl,

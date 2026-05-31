@@ -123,7 +123,6 @@ export function Result({ code, scores, places, onRestart }: ResultProps) {
     typeCode: code,
     typeName: t.name,
     typeTag: t.tag,
-    thumbnail: places.find(p => p.thumbnail)?.thumbnail,
   })
   const onShareInsta = () => flashToast('인스타 스토리 이미지 생성 (프로토타입)')
   const onCopyLink = async () => {
