@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import { QUESTIONS } from '@/features/travel-test/questions'
 import { TYPES } from '@/features/travel-test/typeData'
 import { Intro, Loading, Quiz } from '@/features/travel-test/Screens'
+import { RegionSelect } from '@/features/travel-test/RegionSelect'
 import { Result } from '@/features/travel-test/Result'
-import type { Answer, Scores, TestResult, Vibe } from '@/features/travel-test/types'
+import type { Answer, Scores, TestResult, Vibe, RegionType } from '@/features/travel-test/types'
 import { fetchRecommendations, type TourPlace } from '@/api/tour'
 import '@/features/travel-test/styles.css'
 
-type Phase = 'intro' | 'quiz' | 'loading' | 'result'
+type Phase = 'intro' | 'region' | 'quiz' | 'loading' | 'result'
 
 const VIBE: Vibe = 'casual'
 const SESSION_KEY = 'nonilgangwon_result'
@@ -24,13 +25,11 @@ function synthScores(code: string): Scores {
   return s
 }
 
-// 공유 링크 ?type= 파라미터 처리
 function initialFromUrl(): TestResult | null {
   const code = new URL(location.href).searchParams.get('type')
-  return code && TYPES[code] ? { code, scores: synthScores(code) } : null
+  return code && TYPES[code] ? { code, scores: synthScores(code), region: 'hotplace' } : null
 }
 
-// 세션에서 이전 결과 복원
 function restoreSession(): { result: TestResult; places: TourPlace[] } | null {
   try {
     const raw = sessionStorage.getItem(SESSION_KEY)
@@ -47,18 +46,13 @@ function HomePage() {
   const fromUrl = initialFromUrl()
   const fromSession = !fromUrl ? restoreSession() : null
 
-  const [phase, setPhase] = useState<Phase>(
-    fromUrl || fromSession ? 'result' : 'intro'
-  )
+  const [phase, setPhase] = useState<Phase>(fromUrl || fromSession ? 'result' : 'intro')
   const [index, setIndex] = useState(0)
   const [answers, setAnswers] = useState<(Answer | undefined)[]>([])
-  const [result, setResult] = useState<TestResult | null>(
-    fromUrl ?? fromSession?.result ?? null
-  )
-  const [places, setPlaces] = useState<TourPlace[]>(
-    fromSession?.places ?? []
-  )
+  const [result, setResult] = useState<TestResult | null>(fromUrl ?? fromSession?.result ?? null)
+  const [places, setPlaces] = useState<TourPlace[]>(fromSession?.places ?? [])
 
+  const regionRef = useRef<RegionType>(fromUrl?.region ?? fromSession?.result?.region ?? 'hotplace')
   const apiDoneRef = useRef(false)
   const animDoneRef = useRef(false)
   const pendingResultRef = useRef<{ code: string; scores: Scores; places: TourPlace[] } | null>(null)
@@ -68,16 +62,15 @@ function HomePage() {
     document.documentElement.setAttribute('data-vibe', VIBE)
   }, [])
 
-  // ?type= 파라미터로 접근 시 API 호출
   useEffect(() => {
     if (fromUrl && places.length === 0) {
-      fetchRecommendations(fromUrl.code)
+      fetchRecommendations(fromUrl.code, fromUrl.region)
         .catch(() => [])
         .then((fetched) => setPlaces(fetched))
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // result + places가 바뀔 때마다 세션에 저장
   useEffect(() => {
     if (result && phase === 'result') {
       sessionStorage.setItem(SESSION_KEY, JSON.stringify({ result, places }))
@@ -87,6 +80,11 @@ function HomePage() {
   const start = () => {
     setIndex(0)
     setAnswers([])
+    setPhase('region')
+  }
+
+  const selectRegion = (r: RegionType) => {
+    regionRef.current = r
     setPhase('quiz')
   }
 
@@ -102,7 +100,7 @@ function HomePage() {
     } else {
       const scores = emptyScores()
       next.forEach((a) => {
-        if (a) scores[a.weight] = (scores[a.weight] || 0) + 1
+        if (a) scores[a.weight as keyof Scores] = (scores[a.weight as keyof Scores] || 0) + 1
       })
       const code =
         (scores.J >= scores.P ? 'J' : 'P') +
@@ -116,14 +114,14 @@ function HomePage() {
 
       setPhase('loading')
 
-      fetchRecommendations(code)
+      fetchRecommendations(code, regionRef.current)
         .catch(() => [])
         .then((fetched) => {
           apiDoneRef.current = true
           pendingResultRef.current = { code, scores, places: fetched }
           if (animDoneRef.current) {
             setPlaces(fetched)
-            setResult({ code, scores })
+            setResult({ code, scores, region: regionRef.current })
             setPhase('result')
           }
         })
@@ -139,7 +137,7 @@ function HomePage() {
     if (apiDoneRef.current && pendingResultRef.current) {
       const { code, scores, places: fetched } = pendingResultRef.current
       setPlaces(fetched)
-      setResult({ code, scores })
+      setResult({ code, scores, region: regionRef.current })
       setPhase('result')
     }
   }
@@ -149,6 +147,7 @@ function HomePage() {
     setAnswers([])
     setResult(null)
     setPlaces([])
+    regionRef.current = 'hotplace'
     apiDoneRef.current = false
     animDoneRef.current = false
     pendingResultRef.current = null
@@ -166,6 +165,7 @@ function HomePage() {
         </div>
         <div className="topbar-meta">
           {phase === 'intro' && <span>READY</span>}
+          {phase === 'region' && <span>STEP 0</span>}
           {phase === 'quiz' && <span>Q {index + 1} / {QUESTIONS.length}</span>}
           {phase === 'loading' && <span>ANALYZING</span>}
           {phase === 'result' && (
@@ -178,6 +178,7 @@ function HomePage() {
       </header>
 
       {phase === 'intro' && <Intro onStart={start} vibe={VIBE} />}
+      {phase === 'region' && <RegionSelect onSelect={selectRegion} />}
       {phase === 'quiz' && (
         <Quiz
           key={index}

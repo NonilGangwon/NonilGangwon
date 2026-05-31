@@ -10,9 +10,9 @@ export interface TourPlace {
   lng: string
 }
 
-export async function fetchRecommendations(typeCode: string, size = 6): Promise<TourPlace[]> {
+export async function fetchRecommendations(typeCode: string, region: string = 'hotplace', size = 6): Promise<TourPlace[]> {
   const { data } = await apiClient.get<TourPlace[]>('/tour/recommendations', {
-    params: { type: typeCode, size },
+    params: { type: typeCode, region, size },
   })
   return data
 }

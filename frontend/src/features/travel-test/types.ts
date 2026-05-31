@@ -32,6 +32,8 @@ export interface TravelType {
   checklist: string[]
 }
 
+export type RegionType = 'hotplace' | 'quiet'
+
 export type Scores = Record<Letter, number>
 
 export type Answer = { axis: Axis; choice: 'a' | 'b'; weight: Letter }
@@ -39,4 +41,5 @@ export type Answer = { axis: Axis; choice: 'a' | 'b'; weight: Letter }
 export interface TestResult {
   code: string
   scores: Scores
+  region: RegionType
 }

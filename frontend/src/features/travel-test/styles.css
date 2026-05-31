@@ -1268,3 +1268,121 @@ body {
   font-family: 'Gowun Dodum', sans-serif;
   font-weight: 700;
 }
+
+/* ── Region Select ───────────────────────────────── */
+.region-select {
+  flex: 1;
+  padding: 64px 48px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.region-eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 16px;
+}
+.region-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.region-title {
+  font-family: var(--serif);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 48px;
+  color: var(--ink);
+}
+.region-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.region-card {
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  padding: 36px 32px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.region-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px -12px rgba(0,0,0,0.12);
+}
+.region-card-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.region-card-name {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.region-card-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+.region-card-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+[data-vibe="casual"] .region-title {
+  font-family: 'Jua', sans-serif;
+  font-weight: 400;
+}
+[data-vibe="casual"] .region-eyebrow {
+  font-family: 'Gaegu', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+[data-vibe="casual"] .region-card {
+  border-radius: 24px;
+  border-width: 2px;
+  box-shadow: 0 6px 0 -2px var(--line);
+}
+[data-vibe="casual"] .region-card:hover {
+  box-shadow: 0 10px 0 -2px var(--accent);
+}
+[data-vibe="casual"] .region-card-name {
+  font-family: 'Jua', sans-serif;
+  font-weight: 400;
+}
+[data-vibe="casual"] .region-card-desc {
+  font-family: 'Gowun Dodum', sans-serif;
+}
+[data-vibe="casual"] .region-card-tag,
+[data-vibe="casual"] .region-card-badge {
+  font-family: 'Gaegu', sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 13px;
+}
+
+@media (max-width: 720px) {
+  .region-cards { grid-template-columns: 1fr; }
+  .region-select { padding: 48px 28px; }
+}

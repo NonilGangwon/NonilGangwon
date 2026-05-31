@@ -18,8 +18,8 @@ class TourService {
     @Value("\${tour.api.base-url}")
     private lateinit var baseUrl: String
 
-    fun getRecommendations(typeCode: String, numOfRows: Int = 6): List<TourPlaceDto> {
-        val params = TourTypeMapper.getParams(typeCode)
+    fun getRecommendations(typeCode: String, region: String = "hotplace", numOfRows: Int = 6): List<TourPlaceDto> {
+        val params = TourTypeMapper.getParams(typeCode, region)
 
         val url = "$baseUrl/areaBasedList2" +
             "?serviceKey=$apiKey" +
@@ -27,12 +27,14 @@ class TourService {
             "&MobileApp=NonilGangwon" +
             "&_type=json" +
             "&areaCode=${params.areaCode}" +
+            (if (params.sigunguCode != null) "&sigunguCode=${params.sigunguCode}" else "") +
             "&contentTypeId=${params.contentTypeId}" +
             "&numOfRows=$numOfRows" +
             "&pageNo=1" +
             "&arrange=Q"
 
-        log.info("TourAPI 호출: typeCode=$typeCode")
+        log.info("TourAPI 호출: typeCode=$typeCode, region=$region, sigunguCode=${params.sigunguCode}, contentTypeId=${params.contentTypeId}")
+        log.info("TourAPI URL: $url")
 
         return try {
             val root: TourApiRoot? = restTemplate.getForObject(URI(url), TourApiRoot::class.java)

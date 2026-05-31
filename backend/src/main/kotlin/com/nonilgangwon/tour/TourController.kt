@@ -13,13 +13,14 @@ class TourController(
 ) {
 
     /**
-     * GET /api/tour/recommendations?type=JCAT&size=6
+     * GET /api/tour/recommendations?type=JCAT&region=hotplace&size=6
      *
-     * 여행 유형 코드를 받아 TourAPI에서 추천 장소 리스트를 반환합니다.
+     * 여행 유형 코드 + 지역 타입을 받아 TourAPI에서 추천 장소 리스트를 반환합니다.
      */
     @GetMapping("/recommendations")
     fun getRecommendations(
         @RequestParam type: String,
+        @RequestParam(defaultValue = "hotplace") region: String,
         @RequestParam(defaultValue = "6") size: Int,
     ): ResponseEntity<List<TourPlaceDto>> {
         val validTypePattern = Regex("^[JP][CN][AR][TL]$")
@@ -27,8 +28,7 @@ class TourController(
             return ResponseEntity.badRequest().build()
         }
 
-
-        val result = tourService.getRecommendations(typeCode = type, numOfRows = size)
+        val result = tourService.getRecommendations(typeCode = type, region = region, numOfRows = size)
         return ResponseEntity.ok(result)
     }
 }
