@@ -124,7 +124,7 @@ export function Result({ code, scores, places, onRestart }: ResultProps) {
     typeName: t.name,
     typeTag: t.tag,
   })
-  const onShareInsta = () => flashToast('인스타 스토리 이미지 생성 (프로토타입)')
+  // const onShareInsta = () => flashToast('인스타 스토리 이미지 생성 (프로토타입)')
   const onCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(`${location.origin}${location.pathname}?type=${code}`)
@@ -261,14 +261,14 @@ export function Result({ code, scores, places, onRestart }: ResultProps) {
             </svg>
             카카오톡
           </button>
-          <button className="share-btn" onClick={onShareInsta}>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.3">
-              <rect x="1.5" y="1.5" width="11" height="11" rx="3" />
-              <circle cx="7" cy="7" r="2.5" />
-              <circle cx="10" cy="4" r=".6" fill="currentColor" />
-            </svg>
-            인스타 스토리
-          </button>
+          {/*<button className="share-btn" onClick={onShareInsta}>*/}
+          {/*  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.3">*/}
+          {/*    <rect x="1.5" y="1.5" width="11" height="11" rx="3" />*/}
+          {/*    <circle cx="7" cy="7" r="2.5" />*/}
+          {/*    <circle cx="10" cy="4" r=".6" fill="currentColor" />*/}
+          {/*  </svg>*/}
+          {/*  인스타 스토리*/}
+          {/*</button>*/}
           <button className="share-btn" onClick={onCopyLink}>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.3">
               <path d="M5.5 3 H4 a2.5 2.5 0 0 0 0 5 H5.5 M8.5 11 H10 a2.5 2.5 0 0 0 0-5 H8.5 M5 7 H9" />
