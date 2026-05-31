@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { TYPES } from './typeData'
 import type { Letter, Scores, Vibe } from './types'
 import type { TourPlace } from '../../api/tour'
+import { shareKakao } from '../../utils/kakao'
 
 function CharacterMark({ code, vibe }: { code: string; vibe: Vibe }) {
   const [J, C, A, T] = code.split('')
@@ -219,7 +220,12 @@ export function Result({ code, scores, places, onRestart, vibe }: ResultProps) {
     setTimeout(() => setToast(''), 1800)
   }
 
-  const onShareKakao = () => flashToast('카카오 공유 (프로토타입 시뮬레이션)')
+  const onShareKakao = () => shareKakao({
+    typeCode: code,
+    typeName: t.name,
+    typeTag: t.tag,
+    thumbnail: places.find(p => p.thumbnail)?.thumbnail,
+  })
   const onShareInsta = () => flashToast('인스타 스토리 이미지 생성 (프로토타입)')
   const onCopyLink = async () => {
     try {
