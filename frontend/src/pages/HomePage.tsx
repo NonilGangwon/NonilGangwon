@@ -44,7 +44,6 @@ function restoreSession(): { result: TestResult; places: TourPlace[] } | null {
 }
 
 function HomePage() {
-  // 1순위: URL ?type= 파라미터 / 2순위: 세션 복원 / 3순위: 처음 시작
   const fromUrl = initialFromUrl()
   const fromSession = !fromUrl ? restoreSession() : null
 
@@ -67,6 +66,15 @@ function HomePage() {
   useEffect(() => {
     document.documentElement.setAttribute('data-palette', 'warm')
     document.documentElement.setAttribute('data-vibe', VIBE)
+  }, [])
+
+  // ?type= 파라미터로 접근 시 API 호출
+  useEffect(() => {
+    if (fromUrl && places.length === 0) {
+      fetchRecommendations(fromUrl.code)
+        .catch(() => [])
+        .then((fetched) => setPlaces(fetched))
+    }
   }, [])
 
   // result + places가 바뀔 때마다 세션에 저장
