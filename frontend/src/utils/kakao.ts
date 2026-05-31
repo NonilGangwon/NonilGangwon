@@ -34,7 +34,7 @@ export function shareKakao({ typeCode, typeName, typeTag }: KakaoShareParams) {
 
   const baseUrl = import.meta.env.VITE_SHARE_BASE_URL || location.origin
   const shareUrl = `${baseUrl}/?type=${typeCode}`
-  const imageUrl = `${baseUrl}/characters/${typeCode}.svg`
+  const imageUrl = `${baseUrl}/characters/${typeCode}.png`
 
   try {
     window.Kakao.Share.sendDefault({
