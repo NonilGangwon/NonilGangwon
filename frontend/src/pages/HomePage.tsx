@@ -189,7 +189,6 @@ function HomePage() {
           scores={result.scores}
           places={places}
           onRestart={restart}
-          vibe={VIBE}
         />
       )}
     </div>

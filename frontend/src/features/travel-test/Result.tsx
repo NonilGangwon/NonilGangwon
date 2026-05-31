@@ -1,109 +1,9 @@
 import { useEffect, useState } from 'react'
 import { TYPES } from './typeData'
-import type { Letter, Scores, Vibe } from './types'
+import type { Letter, Scores } from './types'
 import type { TourPlace } from '../../api/tour'
 import { shareKakao } from '../../utils/kakao'
-
-function CharacterMark({ code, vibe }: { code: string; vibe: Vibe }) {
-  const [J, C, A, T] = code.split('')
-  const isCasual = vibe === 'casual'
-
-  if (isCasual) {
-    return (
-      <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-        {C === 'C' ? (
-          <g opacity="0.32">
-            <rect x="22" y="116" width="22" height="60" />
-            <rect x="48" y="100" width="22" height="76" />
-            <rect x="132" y="106" width="22" height="70" />
-            <rect x="158" y="124" width="20" height="52" />
-          </g>
-        ) : (
-          <g opacity="0.32">
-            <path d="M14 176 L 50 110 L 76 140 L 100 116 L 132 154 L 162 120 L 188 176 Z" />
-          </g>
-        )}
-        {A === 'A' && <path d="M70 70 L 100 36 L 130 70 Z" />}
-        {A === 'R' && (
-          <g>
-            <circle cx="100" cy="40" r="10" />
-            <line x1="100" y1="20" x2="100" y2="24" />
-            <line x1="80" y1="40" x2="84" y2="40" />
-            <line x1="116" y1="40" x2="120" y2="40" />
-            <line x1="86" y1="26" x2="89" y2="29" />
-            <line x1="111" y1="29" x2="114" y2="26" />
-          </g>
-        )}
-        <circle cx="100" cy="106" r="38" fill="var(--paper)" />
-        <circle cx="88" cy="102" r="3.5" fill="currentColor" />
-        <circle cx="112" cy="102" r="3.5" fill="currentColor" />
-        <circle cx="80" cy="116" r="3" fill="var(--accent)" stroke="none" opacity="0.55" />
-        <circle cx="120" cy="116" r="3" fill="var(--accent)" stroke="none" opacity="0.55" />
-        <path d="M90 118 q 10 8 20 0" />
-        {J === 'J' ? (
-          <g>
-            <rect x="46" y="138" width="18" height="14" rx="2" />
-            <line x1="51" y1="138" x2="51" y2="134" />
-            <line x1="59" y1="138" x2="59" y2="134" />
-          </g>
-        ) : (
-          <g>
-            <circle cx="150" cy="64" r="9" />
-            <path d="M150 73 q 0 8 -4 16" />
-          </g>
-        )}
-        {T === 'T' ? (
-          <g>
-            <circle cx="56" cy="174" r="10" fill="var(--paper)" />
-            <circle cx="52" cy="172" r="1.6" fill="currentColor" />
-            <circle cx="60" cy="172" r="1.6" fill="currentColor" />
-            <path d="M52 178 q 4 3 8 0" />
-            <circle cx="144" cy="174" r="10" fill="var(--paper)" />
-            <circle cx="140" cy="172" r="1.6" fill="currentColor" />
-            <circle cx="148" cy="172" r="1.6" fill="currentColor" />
-            <path d="M140 178 q 4 3 8 0" />
-          </g>
-        ) : (
-          <g>
-            <path d="M150 56 q 6 -4 12 0 q -6 4 -12 0 z" fill="currentColor" />
-          </g>
-        )}
-      </svg>
-    )
-  }
-
-  return (
-    <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="1.2">
-      {J === 'J' ? (
-        <rect x="20" y="20" width="160" height="160" />
-      ) : (
-        <rect x="20" y="20" width="160" height="160" strokeDasharray="4 6" />
-      )}
-      {C === 'C' ? (
-        <g>
-          <rect x="60" y="80" width="22" height="80" />
-          <rect x="92" y="60" width="22" height="100" />
-          <rect x="124" y="100" width="16" height="60" />
-        </g>
-      ) : (
-        <g>
-          <path d="M40 160 L 80 90 L 110 130 L 140 80 L 170 160 Z" />
-          <path d="M85 130 L 100 110 L 115 130" />
-        </g>
-      )}
-      {A === 'A' ? <path d="M75 50 L 100 30 L 125 50" /> : <line x1="70" y1="40" x2="130" y2="40" />}
-      {T === 'T' ? (
-        <g>
-          <circle cx="78" cy="170" r="6" fill="currentColor" />
-          <circle cx="100" cy="170" r="6" fill="currentColor" />
-          <circle cx="122" cy="170" r="6" fill="currentColor" />
-        </g>
-      ) : (
-        <circle cx="100" cy="170" r="7" fill="currentColor" />
-      )}
-    </svg>
-  )
-}
+import { CharacterMark } from './characters'
 
 function AxisBars({ scores }: { scores: Scores }) {
   const axes: { key: string; left: string; right: string; leftKey: Letter; rightKey: Letter }[] = [
@@ -201,10 +101,9 @@ interface ResultProps {
   scores: Scores
   places: TourPlace[]
   onRestart: () => void
-  vibe: Vibe
 }
 
-export function Result({ code, scores, places, onRestart, vibe }: ResultProps) {
+export function Result({ code, scores, places, onRestart }: ResultProps) {
   const t = TYPES[code]
   const [checks, setChecks] = useState<Record<number, boolean>>({})
   const [toast, setToast] = useState('')
@@ -255,8 +154,8 @@ export function Result({ code, scores, places, onRestart, vibe }: ResultProps) {
             <span>TYPE</span>
             <span className="strong">{code}</span>
           </div>
-          <div className="character" style={{ color: 'var(--ink-soft)' }}>
-            <CharacterMark code={code} vibe={vibe} />
+          <div className="character">
+            <CharacterMark code={code} />
           </div>
           <div className="stamp-bottom">
             <span>NO. {Object.keys(TYPES).indexOf(code) + 1} / 16</span>

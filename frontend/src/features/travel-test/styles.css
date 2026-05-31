@@ -541,11 +541,16 @@ body {
 .result-portrait .character {
   position: absolute;
   inset: 0;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
+  padding: 16px;
 }
-.result-portrait .character svg {
-  width: 56%; height: 56%;
+.result-portrait .character img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .result-portrait .stamp-bottom {
   font-family: var(--mono);

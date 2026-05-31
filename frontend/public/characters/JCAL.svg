@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <rect width="200" height="200" rx="20" fill="#F0F4FF"/>
+  <g opacity="0.35"><rect x="8" y="120" width="16" height="68" rx="2" fill="#A0B0D0"/><rect x="28" y="100" width="18" height="88" rx="2" fill="#A0B0D0"/><rect x="50" y="112" width="14" height="76" rx="2" fill="#A0B0D0"/><rect x="130" y="108" width="16" height="80" rx="2" fill="#A0B0D0"/><rect x="150" y="118" width="18" height="70" rx="2" fill="#A0B0D0"/><rect x="172" y="126" width="14" height="62" rx="2" fill="#A0B0D0"/></g>
+  <path d="M78 90 L86 68 L94 90" fill="#D090E0" stroke="#6030A0" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M106 90 L114 68 L122 90" fill="#D090E0" stroke="#6030A0" stroke-width="1.5" stroke-linejoin="round"/>
+  <ellipse cx="100" cy="114" rx="42" ry="38" fill="#E8D8F8" stroke="#6030A0" stroke-width="1.8"/>
+  <ellipse cx="100" cy="122" rx="14" ry="9" fill="#D090E0" stroke="none"/>
+  <ellipse cx="100" cy="120" rx="8" ry="6" fill="#C060C0" stroke="#6030A0" stroke-width="1.2"/>
+  <circle cx="87" cy="108" r="4" fill="#2A1040"/><circle cx="113" cy="108" r="4" fill="#2A1040"/>
+  <circle cx="88.5" cy="106.5" r="1.5" fill="white"/><circle cx="114.5" cy="106.5" r="1.5" fill="white"/>
+  <circle cx="84" cy="118" r="3" fill="#E080D0" opacity="0.6"/><circle cx="116" cy="118" r="3" fill="#E080D0" opacity="0.6"/>
+  <path d="M76 112 q-8 0-10 4 q-2 4 4 6" stroke="#6030A0" stroke-width="1" fill="none"/>
+  <path d="M124 112 q8 0 10 4 q2 4-4 6" stroke="#6030A0" stroke-width="1" fill="none"/>
+  <path d="M93 128 q7 6 14 0" stroke="#6030A0" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <path d="M76 150 q-10 8-18 4" stroke="#6030A0" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M124 150 q10 8 18 4" stroke="#6030A0" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <rect x="130" y="68" width="26" height="22" rx="2" fill="#FFFCE0" stroke="#A08020" stroke-width="1.5"/>
+  <line x1="136" y1="76" x2="150" y2="76" stroke="#A08020" stroke-width="1"/>
+  <line x1="134" y1="80" x2="152" y2="80" stroke="#A08020" stroke-width="1"/>
+  <line x1="136" y1="84" x2="148" y2="84" stroke="#A08020" stroke-width="1"/>
+  <circle cx="143" cy="66" r="3.5" fill="#E04040"/>
+  <line x1="143" y1="62" x2="143" y2="68" stroke="#E04040" stroke-width="1.2"/>
+</svg>
