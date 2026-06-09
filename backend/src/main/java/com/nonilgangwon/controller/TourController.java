@@ -27,9 +27,9 @@ public class TourController {
      */
     @GetMapping("/recommendations")
     public ResponseEntity<List<TourPlaceDto>> getRecommendations(
-            @RequestParam String type,
-            @RequestParam(defaultValue = "hotplace") String region,
-            @RequestParam(defaultValue = "6") int size
+            @RequestParam("type") String type,
+            @RequestParam(name = "region", defaultValue = "hotplace") String region,
+            @RequestParam(name = "size", defaultValue = "6") int size
     ) {
         if (!type.matches("^[JP][CN][AR][TL]$")) {
             return ResponseEntity.badRequest().build();
